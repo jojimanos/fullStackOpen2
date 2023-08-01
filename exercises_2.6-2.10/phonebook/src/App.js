@@ -11,46 +11,51 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [searchName, setSearchName] = useState('')
   const [updater, setUpdater] = useState(false)
+  const [entryMode, setEntryMode] = useState("update")
 
-  const handleSubmit = (event) => {
+  const handleSubmitName = (event) => {
     event.preventDefault();
 
     let excludeDuplicates = persons.filter(person => person.name === newName)
 
-    if (excludeDuplicates.length)
-      return window.alert(`${newName} is already on phonebook`)
+    if (excludeDuplicates.length) {
+      const confirmation = window.confirm(`${newName} already exists. Replace the old naumber?`)
+      const entryToUpdate = persons.find(person => person.name === newName)
+      const updatedEntry = {
+        ...entryToUpdate,
+        number: newNumber,
+      }
 
-    const newPerson = {
-      name: newName,
-      number: newNumber,
-      id: persons.length + 1
+      console.log(updatedEntry)
+      if (confirmation) {
+        services.UpdateNumber(updatedEntry, setPersons, persons)
+      }
+    } else {
+
+      const newPerson = {
+        name: newName,
+        number: newNumber,
+        id: persons.length + 1
+      }
+
+      services.AddName(newPerson)
+
+      setPersons([...persons, newPerson]);
+      setNewName('');
+      setNewNumber('')
+      excludeDuplicates = ""
+      console.log(persons)
     }
-
-    services.AddName(newPerson)
-
-    setPersons([...persons, newPerson]);
-    setNewName('');
-    setNewNumber('')
-    excludeDuplicates = ""
-    console.log(persons)
   }
 
   const handleDelete = (id) => {
+    setUpdater(false)
     const confirmation = window.confirm("Are you sure you want to delete this user?")
     if (confirmation) {
-      services.DeleteName(id)
+      services.DeleteName(id);
+      setPersons(persons.filter(person => person.id !== id))
     }
-    setUpdater(!updater)
   }
-
-  // const handleUpdateNumber = () => {
-    // const updatedEntry = {
-      // name: newName,
-      // number: newNumber,
-    // }
-// 
-    // services.UpdateNumber(newName, updatedEntry, setPersons, persons)
-  // }
 
   let searchPerson = persons.filter((person) => person.name.toLowerCase() === searchName.toLowerCase())
 
@@ -58,7 +63,7 @@ const App = () => {
 
   useEffect(() => {
     services.GetNames(setPersons)
-  }, [updater])
+  }, [])
 
   return (
     <div>
@@ -66,9 +71,10 @@ const App = () => {
       <div>
         <SearchBar searchName={searchName} setSearchName={setSearchName} searchPerson={searchPerson} />
         <InputForm newName={newName} newNumber={newNumber} setNewName={setNewName} setNewNumber={setNewNumber} handleSubmit={
-          // persons.map((person) => {return person.name === newName}) ? handleUpdateNumber : 
-          handleSubmit} />
-        <Numbers persons={persons} handleDelete={handleDelete}/>
+          handleSubmitName
+        }
+          persons={persons} setEntryMode={setEntryMode} />
+        <Numbers persons={persons} handleDelete={handleDelete} setPersons={setPersons} />
       </div>
     </div>
   )

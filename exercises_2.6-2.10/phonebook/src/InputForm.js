@@ -1,6 +1,6 @@
 import Input from "./Input"
 
-const InputForm = ({newName, newNumber, setNewName, setNewNumber, handleSubmit}) => {
+const InputForm = ({newName, newNumber, setNewName, setNewNumber, handleSubmit, persons, setEntryMode}) => {
     return (
         <>
             <h2>Add a new one:</h2>
