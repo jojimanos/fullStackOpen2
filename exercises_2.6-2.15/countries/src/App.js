@@ -38,7 +38,7 @@ function App() {
       <Input text={"Find countries "} setCountryValue={setCounrtyValue} />
       {displayCountry.length === 0 ? <p>Insert data</p> :
         (
-          displayCountry.length === 1 ? <Info displayCountry={displayCountry.map(c => ({ name: c.name.common, capital: c.capital, area: c.area, flag: c.flags.png, languages: c.languages }))} /> :
+          displayCountry.length === 1 ? <Info displayCountry={displayCountry.map(c => ({ name: c.name.common, capital: c.capital, area: c.area, flag: c.flags.png, languages: c.languages, capitalLocation: c.capitalInfo.latlng }))} /> :
             (
               displayCountry.length > 10 ? <p>Make the query more specific</p> : <Info displayCountry={displayCountry.map(c => ({ name: c.name.common, capital: c.capital, area: c.area, flag: c.flags.png, languages: c.languages }))} />
             )
