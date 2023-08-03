@@ -19,23 +19,25 @@ function App() {
 
   useEffect(() => {
     if (countryValue.length !== 0)
-      setNewEntry(allCountries.find(country => { return country.name.common.toLowerCase().includes(countryValue.toLowerCase()) }))
-      console.log(newEntry)
-  }, [newEntry])
-
-  useEffect(() => {
-    // if (displayCountry.includes(newEntry) !== true)
-      setDisplayCountry([...displayCountry, newEntry])
+     setNewEntry(allCountries.filter(country => { return country.name.common.toLowerCase().includes(countryValue.toLowerCase()) }))
+     else if(countryValue.length === 0) {setNewEntry([])}
+      // console.log(newEntry)
   }, [countryValue])
 
+  useEffect(() => {
+    if (displayCountry.includes(newEntry) !== true)
+      setDisplayCountry(newEntry)
+  }, [newEntry])
+
   console.log(allCountries)
-  console.log(displayCountry)
+  console.log("Display countries", displayCountry)
   console.log("New entry here", newEntry)
 
   return (
     <>
       <Input text={"Find countries "} setCountryValue={setCounrtyValue} />
-      {/* <Info displayCountry={displayCountry}/> */}
+      {displayCountry.length === 0}
+      {displayCountry.length > 10 ? <p>Make the query more specific</p> : <Info displayCountry={displayCountry}/>}
     </>
   );
 }

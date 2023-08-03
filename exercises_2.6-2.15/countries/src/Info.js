@@ -1,7 +1,7 @@
 const Info = ({ displayCountry }) => {
     return (
         <>
-            {displayCountry}
+            {JSON.stringify(displayCountry)}
         </>
     )
 }
