@@ -19,9 +19,9 @@ function App() {
 
   useEffect(() => {
     if (countryValue.length !== 0)
-     setNewEntry(allCountries.filter(country => { return country.name.common.toLowerCase().includes(countryValue.toLowerCase()) }))
-     else if(countryValue.length === 0) {setNewEntry([])}
-      // console.log(newEntry)
+      setNewEntry(allCountries.filter(country => { return country.name.common.toLowerCase().includes(countryValue.toLowerCase()) }))
+    else if (countryValue.length === 0) { setNewEntry([]) }
+    // console.log(newEntry)
   }, [countryValue])
 
   useEffect(() => {
@@ -36,8 +36,14 @@ function App() {
   return (
     <>
       <Input text={"Find countries "} setCountryValue={setCounrtyValue} />
-      {displayCountry.length === 0}
-      {displayCountry.length > 10 ? <p>Make the query more specific</p> : <Info displayCountry={displayCountry}/>}
+      {displayCountry.length === 0 ? <p>Insert data</p> :
+        (
+          displayCountry.length === 1 ? <Info displayCountry={displayCountry.map(c => ({ name: c.name.common, capital: c.capital, area: c.area, flag: c.flags.png, languages: c.languages }))} /> :
+            (
+              displayCountry.length > 10 ? <p>Make the query more specific</p> : <Info displayCountry={displayCountry.map(c => ({ name: c.name.common, capital: c.capital, area: c.area, flag: c.flags.png, languages: c.languages }))} />
+            )
+        )
+      }
     </>
   );
 }
