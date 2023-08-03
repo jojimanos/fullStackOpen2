@@ -3,6 +3,7 @@ import InputForm from './InputForm'
 import SearchBar from './SearchBar'
 import Numbers from './Numbers'
 import services from './services'
+import NotificationMessage from './NotificationMessage'
 
 const App = () => {
 
@@ -10,8 +11,10 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchName, setSearchName] = useState('')
-  const [updater, setUpdater] = useState(false)
   const [entryMode, setEntryMode] = useState("update")
+  const [notificationMessageText, setNotificationMessageText] = useState("")
+  const [displaySuccessOrFailure, setDisplaySuccessOrFailure] = useState(false)
+  const [error, setError] = useState(false)
 
   const handleSubmitName = (event) => {
     event.preventDefault();
@@ -25,10 +28,9 @@ const App = () => {
         ...entryToUpdate,
         number: newNumber,
       }
-
       console.log(updatedEntry)
       if (confirmation) {
-        services.UpdateNumber(updatedEntry, setPersons, persons)
+        services.UpdateNumber(updatedEntry, setPersons, persons, setNotificationMessageText, setError, setDisplaySuccessOrFailure)
       }
     } else {
 
@@ -38,7 +40,7 @@ const App = () => {
         id: persons.length + 1
       }
 
-      services.AddName(newPerson)
+      services.AddName(newPerson, setNotificationMessageText, setError, setDisplaySuccessOrFailure)
 
       setPersons([...persons, newPerson]);
       setNewName('');
@@ -49,10 +51,9 @@ const App = () => {
   }
 
   const handleDelete = (id) => {
-    setUpdater(false)
     const confirmation = window.confirm("Are you sure you want to delete this user?")
     if (confirmation) {
-      services.DeleteName(id);
+      services.DeleteName(id, setNotificationMessageText, setError);
       setPersons(persons.filter(person => person.id !== id))
     }
   }
@@ -62,12 +63,13 @@ const App = () => {
   console.log(persons, searchPerson)
 
   useEffect(() => {
-    services.GetNames(setPersons)
+    services.GetNames(setPersons, setNotificationMessageText, setError)
   }, [])
 
   return (
     <div>
       <h2>Phonebook</h2>
+      {displaySuccessOrFailure ? <NotificationMessage text={notificationMessageText} error={error}/> : null}
       <div>
         <SearchBar searchName={searchName} setSearchName={setSearchName} searchPerson={searchPerson} />
         <InputForm newName={newName} newNumber={newNumber} setNewName={setNewName} setNewNumber={setNewNumber} handleSubmit={
